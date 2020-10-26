@@ -13,10 +13,40 @@ const dummyData = [
   { id: 4, text: 'Car', amount: 2625 }
 ]
 
-// Add transaction to the list
 
 let transactions = dummyData
 
+// Add Transaction
+function addTransaction(e) {
+  e.preventDefault()
+  
+  if (text.value.trim() === '' || amount.value.trim() === '') {
+    alert('Please add a text and amount')
+  } else {
+    const transaction = {
+      id: generateId(),
+      text: text.value,
+      amount: +amount.value,
+    }
+    // console.log(transaction)
+
+    transactions.push(transaction)
+
+    addTransactionList(transaction)
+    updateValues()
+
+    text.value = ''
+    amount.value= ''
+
+  }
+} 
+
+// Generate random id
+function generateId() {
+  return Math.floor(Math.random() * 100000000)
+}
+
+// Add transaction to the list
 function addTransactionList(transaction) {
   // Get sign
   const sign = transaction.amount < 0 ? '-' : '+' // checking the value of the amount property in the array.btn
@@ -29,14 +59,13 @@ function addTransactionList(transaction) {
   item.innerHTML = 
   `
   ${transaction.text} <span>${sign}${Math.abs(transaction.amount)}</span>
-  <button class="delete-btn">x</button>
+  <button class="delete-btn" onclick="removeItem(${transaction.id})">x</button>
   ` // Math.abs is to get rid of the the minus sign in the amount property  
 
   list.appendChild(item)
 }
 
 // Update the total card
-
 function updateValues() {
   const amounts = transactions.map(transaction => transaction.amount) // looping through the array and creating a new array using map() for only the amounts
 
@@ -55,6 +84,13 @@ function updateValues() {
   money_minus.innerText = `$${expense}`
 }
 
+// remove item by id
+function removeItem(id) {
+  transactions = transactions.filter(transaction => transaction.id !== id)
+
+  init()
+}
+
 // Init app
 function init() {
   list.innerHTML = ''
@@ -64,3 +100,6 @@ function init() {
 }
 
 init()
+
+// Add a transaction 
+form.addEventListener('submit', addTransaction)
